@@ -1,4 +1,5 @@
 export interface PolicyRecord {
+  policyId: string;
   jurisdiction: string;
   category: string;
   subcategory: string;
@@ -8,10 +9,12 @@ export interface PolicyRecord {
   retentionTrigger: string;
   legalReference: string;
   description: string;
+  isCustom?: boolean; // Optional field to mark custom policies
 }
 
 export const policiesData: PolicyRecord[] = [
   {
+    policyId: "USA-001",
     jurisdiction: "USA",
     category: "Payroll",
     subcategory: "Employee Records",
@@ -23,6 +26,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Keep employee pay records for labor law compliance"
   },
   {
+    policyId: "DEU-002",
     jurisdiction: "Germany",
     category: "Accounting",
     subcategory: "Financial Statements",
@@ -34,6 +38,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention per HGB requirements"
   },
   {
+    policyId: "BRA-003",
     jurisdiction: "Brazil",
     category: "Banking",
     subcategory: "AML",
@@ -45,6 +50,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Anti-money laundering compliance docs"
   },
   {
+    policyId: "JPN-004",
     jurisdiction: "Japan",
     category: "Finance",
     subcategory: "Audit",
@@ -56,6 +62,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retain for internal/external audit reviews"
   },
   {
+    policyId: "AUS-005",
     jurisdiction: "Australia",
     category: "Healthcare",
     subcategory: "Patient Records",
@@ -67,6 +74,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for health provider recordkeeping"
   },
   {
+    policyId: "USA-006",
     jurisdiction: "USA",
     category: "Tax",
     subcategory: "Tax Filings",
@@ -78,6 +86,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Recommended for perpetual compliance"
   },
   {
+    policyId: "DEU-007",
     jurisdiction: "Germany",
     category: "HR",
     subcategory: "Employee Records",
@@ -89,6 +98,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for litigation and employment history"
   },
   {
+    policyId: "BRA-008",
     jurisdiction: "Brazil",
     category: "Contract",
     subcategory: "Civil Contracts",
@@ -100,6 +110,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Obligatory civil contract retention"
   },
   {
+    policyId: "JPN-009",
     jurisdiction: "Japan",
     category: "Finance",
     subcategory: "Accounts Payable",
@@ -111,6 +122,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention for VAT and accounting rules"
   },
   {
+    policyId: "AUS-010",
     jurisdiction: "Australia",
     category: "Sales",
     subcategory: "Sales Records",
@@ -122,6 +134,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for business/tax audits"
   },
   {
+    policyId: "CAN-011",
     jurisdiction: "Canada",
     category: "HR",
     subcategory: "Recruitment",
@@ -133,6 +146,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention for recruitment audit"
   },
   {
+    policyId: "IND-012",
     jurisdiction: "India",
     category: "Tax",
     subcategory: "GST",
@@ -144,6 +158,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention for GST compliance"
   },
   {
+    policyId: "GBR-013",
     jurisdiction: "UK",
     category: "Corporate",
     subcategory: "Governance",
@@ -155,6 +170,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for corporate recordkeeping"
   },
   {
+    policyId: "FRA-014",
     jurisdiction: "France",
     category: "Healthcare",
     subcategory: "Medical Records",
@@ -166,6 +182,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for hospital compliance"
   },
   {
+    policyId: "SGP-015",
     jurisdiction: "Singapore",
     category: "Finance",
     subcategory: "Banking Statements",
@@ -177,6 +194,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Required for financial audits"
   },
   {
+    policyId: "ZAF-016",
     jurisdiction: "South Africa",
     category: "Legal",
     subcategory: "Contracts",
@@ -188,6 +206,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention for dispute resolution"
   },
   {
+    policyId: "USA-017",
     jurisdiction: "USA",
     category: "IT",
     subcategory: "Security",
@@ -199,6 +218,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Delete after 1 year for privacy/security"
   },
   {
+    policyId: "DEU-018",
     jurisdiction: "Germany",
     category: "Marketing",
     subcategory: "Customer Data",
@@ -210,6 +230,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Comply with data minimisation rules"
   },
   {
+    policyId: "BRA-019",
     jurisdiction: "Brazil",
     category: "Logistics",
     subcategory: "Shipping",
@@ -221,6 +242,7 @@ export const policiesData: PolicyRecord[] = [
     description: "Retention for trade compliance"
   },
   {
+    policyId: "JPN-020",
     jurisdiction: "Japan",
     category: "Manufacturing",
     subcategory: "Quality Control",
@@ -230,5 +252,1109 @@ export const policiesData: PolicyRecord[] = [
     retentionTrigger: "Inspection Date",
     legalReference: "Japan Industrial Standards Act",
     description: "Quality compliance"
+  },
+  {
+    policyId: "NLD-021",
+    jurisdiction: "Netherlands",
+    category: "GDPR",
+    subcategory: "Personal Data",
+    recordType: "Data Subject Requests",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Request Date",
+    legalReference: "GDPR Article 17",
+    description: "Documentation of data subject rights requests"
+  },
+  {
+    policyId: "NLD-022",
+    jurisdiction: "Netherlands",
+    category: "Accounting",
+    subcategory: "Financial Records",
+    recordType: "VAT Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Dutch Accounting Standards Act",
+    description: "VAT documentation retention"
+  },
+  {
+    policyId: "ESP-023",
+    jurisdiction: "Spain",
+    category: "Labor Law",
+    subcategory: "Employee Records",
+    recordType: "Payroll Records",
+    retentionPeriod: "4",
+    retentionType: "Minimum",
+    retentionTrigger: "Payment Date",
+    legalReference: "Spanish Workers' Statute",
+    description: "Payroll documentation for labor compliance"
+  },
+  {
+    policyId: "ESP-024",
+    jurisdiction: "Spain",
+    category: "Tax",
+    subcategory: "Corporate Tax",
+    recordType: "Tax Returns",
+    retentionPeriod: "4",
+    retentionType: "Minimum",
+    retentionTrigger: "Filing Date",
+    legalReference: "Spanish Tax Code",
+    description: "Corporate tax return retention"
+  },
+  {
+    policyId: "ITA-025",
+    jurisdiction: "Italy",
+    category: "Banking",
+    subcategory: "Customer Records",
+    recordType: "Account Opening Documents",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Account Closure",
+    legalReference: "Bank of Italy Circular 285",
+    description: "Customer due diligence records"
+  },
+  {
+    policyId: "ITA-026",
+    jurisdiction: "Italy",
+    category: "Insurance",
+    subcategory: "Claims",
+    recordType: "Claims Files",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Claim Settlement",
+    legalReference: "Italian Insurance Code",
+    description: "Insurance claims documentation"
+  },
+  {
+    policyId: "CHE-027",
+    jurisdiction: "Switzerland",
+    category: "Banking",
+    subcategory: "Anti-Money Laundering",
+    recordType: "Suspicious Activity Reports",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Filing",
+    legalReference: "Swiss Anti-Money Laundering Act",
+    description: "AML compliance documentation"
+  },
+  {
+    policyId: "CHE-028",
+    jurisdiction: "Switzerland",
+    category: "Data Protection",
+    subcategory: "Privacy",
+    recordType: "Data Processing Records",
+    retentionPeriod: "3",
+    retentionType: "Maximum",
+    retentionTrigger: "Processing End",
+    legalReference: "Swiss Federal Data Protection Act",
+    description: "Data processing activity records"
+  },
+  {
+    policyId: "BEL-029",
+    jurisdiction: "Belgium",
+    category: "Environmental",
+    subcategory: "Waste Management",
+    recordType: "Hazardous Waste Manifests",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Disposal Date",
+    legalReference: "Belgian Environmental Code",
+    description: "Environmental compliance documentation"
+  },
+  {
+    policyId: "BEL-030",
+    jurisdiction: "Belgium",
+    category: "Pharmaceutical",
+    subcategory: "Clinical Trials",
+    recordType: "Clinical Data",
+    retentionPeriod: "15",
+    retentionType: "Minimum",
+    retentionTrigger: "Study Completion",
+    legalReference: "EU Good Clinical Practice Directive",
+    description: "Clinical trial data retention"
+  },
+  {
+    policyId: "KOR-031",
+    jurisdiction: "South Korea",
+    category: "Personal Information",
+    subcategory: "Customer Data",
+    recordType: "Personal Information Files",
+    retentionPeriod: "3",
+    retentionType: "Maximum",
+    retentionTrigger: "Purpose Achievement",
+    legalReference: "Personal Information Protection Act",
+    description: "Personal data retention limits"
+  },
+  {
+    policyId: "KOR-032",
+    jurisdiction: "South Korea",
+    category: "Labor",
+    subcategory: "Workplace Safety",
+    recordType: "Safety Training Records",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Training Date",
+    legalReference: "Occupational Safety and Health Act",
+    description: "Worker safety training documentation"
+  },
+  {
+    policyId: "THA-033",
+    jurisdiction: "Thailand",
+    category: "Banking",
+    subcategory: "Customer Records",
+    recordType: "KYC Documents",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Account Closure",
+    legalReference: "Bank of Thailand Regulations",
+    description: "Know Your Customer documentation"
+  },
+  {
+    policyId: "THA-034",
+    jurisdiction: "Thailand",
+    category: "Tax",
+    subcategory: "Value Added Tax",
+    recordType: "VAT Invoices",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Invoice Date",
+    legalReference: "Thai Revenue Code",
+    description: "VAT documentation for tax compliance"
+  },
+  {
+    policyId: "MYS-035",
+    jurisdiction: "Malaysia",
+    category: "Data Protection",
+    subcategory: "Personal Data",
+    recordType: "Data Breach Notifications",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Breach Date",
+    legalReference: "Personal Data Protection Act 2010",
+    description: "Data breach incident records"
+  },
+  {
+    policyId: "MYS-036",
+    jurisdiction: "Malaysia",
+    category: "Islamic Banking",
+    subcategory: "Shariah Compliance",
+    recordType: "Shariah Audit Reports",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Islamic Financial Services Act 2013",
+    description: "Shariah compliance documentation"
+  },
+  {
+    policyId: "IDN-037",
+    jurisdiction: "Indonesia",
+    category: "Manufacturing",
+    subcategory: "Product Safety",
+    recordType: "Product Recall Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Recall Initiation",
+    legalReference: "Indonesian Consumer Protection Law",
+    description: "Product safety and recall documentation"
+  },
+  {
+    policyId: "IDN-038",
+    jurisdiction: "Indonesia",
+    category: "Telecommunications",
+    subcategory: "Data Retention",
+    recordType: "Traffic Data",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Communication End",
+    legalReference: "Indonesian Telecommunications Law",
+    description: "Telecommunications traffic data retention"
+  },
+  {
+    policyId: "PHL-039",
+    jurisdiction: "Philippines",
+    category: "Healthcare",
+    subcategory: "Medical Records",
+    recordType: "Patient Medical Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Last Treatment",
+    legalReference: "Philippine Medical Act",
+    description: "Patient medical record retention"
+  },
+  {
+    policyId: "PHL-040",
+    jurisdiction: "Philippines",
+    category: "Securities",
+    subcategory: "Trading Records",
+    recordType: "Securities Transaction Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Securities Regulation Code",
+    description: "Securities trading documentation"
+  },
+  {
+    policyId: "VNM-041",
+    jurisdiction: "Vietnam",
+    category: "Labor",
+    subcategory: "Employment",
+    recordType: "Labor Contracts",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Contract Termination",
+    legalReference: "Vietnamese Labor Code",
+    description: "Employment contract retention"
+  },
+  {
+    policyId: "VNM-042",
+    jurisdiction: "Vietnam",
+    category: "Foreign Investment",
+    subcategory: "Investment Records",
+    recordType: "Investment Certificates",
+    retentionPeriod: "Unlimited",
+    retentionType: "Recommended",
+    retentionTrigger: "Certificate Issuance",
+    legalReference: "Law on Investment",
+    description: "Foreign investment documentation"
+  },
+  {
+    policyId: "MEX-043",
+    jurisdiction: "Mexico",
+    category: "Tax",
+    subcategory: "VAT",
+    recordType: "IVA Documentation",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Filing Date",
+    legalReference: "Mexican Tax Code",
+    description: "Value-added tax documentation"
+  },
+  {
+    policyId: "MEX-044",
+    jurisdiction: "Mexico",
+    category: "Environmental",
+    subcategory: "Environmental Impact",
+    recordType: "Environmental Assessments",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "General Law of Ecological Balance",
+    description: "Environmental impact documentation"
+  },
+  {
+    policyId: "CAN-045",
+    jurisdiction: "Canada",
+    category: "Healthcare",
+    subcategory: "Patient Records",
+    recordType: "Medical Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Last Treatment",
+    legalReference: "Provincial Health Acts",
+    description: "Patient medical record retention"
+  },
+  {
+    policyId: "CAN-046",
+    jurisdiction: "Canada",
+    category: "Securities",
+    subcategory: "Investment Records",
+    recordType: "Investment Advisor Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Account Closure",
+    legalReference: "National Instrument 31-103",
+    description: "Investment advisory documentation"
+  },
+  {
+    policyId: "USA-047",
+    jurisdiction: "USA",
+    category: "Healthcare",
+    subcategory: "HIPAA",
+    recordType: "Medical Records",
+    retentionPeriod: "6",
+    retentionType: "Minimum",
+    retentionTrigger: "Last Treatment",
+    legalReference: "HIPAA",
+    description: "Protected health information retention"
+  },
+  {
+    policyId: "USA-048",
+    jurisdiction: "USA",
+    category: "Securities",
+    subcategory: "Investment Company",
+    recordType: "Investment Company Records",
+    retentionPeriod: "6",
+    retentionType: "Minimum",
+    retentionTrigger: "Record Creation",
+    legalReference: "Investment Company Act Rule 31a-2",
+    description: "Investment company regulatory records"
+  },
+  {
+    policyId: "USA-049",
+    jurisdiction: "USA",
+    category: "Environmental",
+    subcategory: "Air Quality",
+    recordType: "Emissions Monitoring Data",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Monitoring Date",
+    legalReference: "Clean Air Act",
+    description: "Air emissions monitoring records"
+  },
+  {
+    policyId: "USA-050",
+    jurisdiction: "USA",
+    category: "Food Safety",
+    subcategory: "HACCP",
+    recordType: "Food Safety Records",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Record Creation",
+    legalReference: "FDA Food Safety Modernization Act",
+    description: "Food safety and HACCP documentation"
+  },
+  {
+    policyId: "ARG-051",
+    jurisdiction: "Argentina",
+    category: "Labor",
+    subcategory: "Employment Records",
+    recordType: "Employment Contracts",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Employment Termination",
+    legalReference: "Labor Contract Law",
+    description: "Employment contract documentation"
+  },
+  {
+    policyId: "ARG-052",
+    jurisdiction: "Argentina",
+    category: "Personal Data",
+    subcategory: "Data Protection",
+    recordType: "Consent Records",
+    retentionPeriod: "2",
+    retentionType: "Maximum",
+    retentionTrigger: "Consent Withdrawal",
+    legalReference: "Personal Data Protection Law 25.326",
+    description: "Data processing consent documentation"
+  },
+  {
+    policyId: "CHL-053",
+    jurisdiction: "Chile",
+    category: "Banking",
+    subcategory: "Customer Records",
+    recordType: "Customer Identification Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Relationship End",
+    legalReference: "General Banking Law",
+    description: "Customer identification documentation"
+  },
+  {
+    policyId: "CHL-054",
+    jurisdiction: "Chile",
+    category: "Mining",
+    subcategory: "Safety Records",
+    recordType: "Mine Safety Inspection Reports",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Inspection Date",
+    legalReference: "Mining Safety Regulations",
+    description: "Mining safety compliance records"
+  },
+  {
+    policyId: "COL-055",
+    jurisdiction: "Colombia",
+    category: "Tax",
+    subcategory: "Income Tax",
+    recordType: "Tax Supporting Documents",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Filing Date",
+    legalReference: "Colombian Tax Code",
+    description: "Income tax supporting documentation"
+  },
+  {
+    policyId: "COL-056",
+    jurisdiction: "Colombia",
+    category: "Telecommunications",
+    subcategory: "Data Retention",
+    recordType: "Communications Metadata",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Communication Date",
+    legalReference: "Law 1581 of 2012",
+    description: "Telecommunications data retention"
+  },
+  {
+    policyId: "PER-057",
+    jurisdiction: "Peru",
+    category: "Financial Services",
+    subcategory: "Banking",
+    recordType: "Credit Risk Assessment",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "General Banking Law",
+    description: "Credit risk evaluation documentation"
+  },
+  {
+    policyId: "PER-058",
+    jurisdiction: "Peru",
+    category: "Personal Data",
+    subcategory: "Privacy",
+    recordType: "Privacy Impact Assessments",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "Personal Data Protection Law 29733",
+    description: "Privacy impact assessment records"
+  },
+  {
+    policyId: "UAE-059",
+    jurisdiction: "UAE",
+    category: "Banking",
+    subcategory: "Islamic Finance",
+    recordType: "Sukuk Documentation",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Maturity Date",
+    legalReference: "UAE Central Bank Regulation",
+    description: "Islamic finance instrument documentation"
+  },
+  {
+    policyId: "UAE-060",
+    jurisdiction: "UAE",
+    category: "Free Zone",
+    subcategory: "Company Records",
+    recordType: "Company Formation Documents",
+    retentionPeriod: "Unlimited",
+    retentionType: "Recommended",
+    retentionTrigger: "Company Formation",
+    legalReference: "Free Zone Authority Regulations",
+    description: "Free zone company establishment records"
+  },
+  {
+    policyId: "SAU-061",
+    jurisdiction: "Saudi Arabia",
+    category: "Capital Markets",
+    subcategory: "Securities",
+    recordType: "Securities Trading Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Capital Market Law",
+    description: "Securities market transaction records"
+  },
+  {
+    policyId: "SAU-062",
+    jurisdiction: "Saudi Arabia",
+    category: "Zakat",
+    subcategory: "Religious Tax",
+    recordType: "Zakat Calculations",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Filing Date",
+    legalReference: "Zakat, Tax and Customs Authority Regulations",
+    description: "Zakat assessment and payment records"
+  },
+  {
+    policyId: "ISR-063",
+    jurisdiction: "Israel",
+    category: "Privacy",
+    subcategory: "Personal Data",
+    recordType: "Data Transfer Agreements",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Agreement Termination",
+    legalReference: "Privacy Protection Law 5741-1981",
+    description: "International data transfer documentation"
+  },
+  {
+    policyId: "ISR-064",
+    jurisdiction: "Israel",
+    category: "Defense",
+    subcategory: "Export Control",
+    recordType: "Defense Export Licenses",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "License Expiry",
+    legalReference: "Defense Export Control Law",
+    description: "Defense-related export authorization records"
+  },
+  {
+    policyId: "EGY-065",
+    jurisdiction: "Egypt",
+    category: "Banking",
+    subcategory: "Central Banking",
+    recordType: "Foreign Exchange Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Central Bank of Egypt Law",
+    description: "Foreign currency transaction documentation"
+  },
+  {
+    policyId: "EGY-066",
+    jurisdiction: "Egypt",
+    category: "Tourism",
+    subcategory: "Hotel Records",
+    recordType: "Guest Registration Records",
+    retentionPeriod: "1",
+    retentionType: "Minimum",
+    retentionTrigger: "Check-out Date",
+    legalReference: "Tourism Development Law",
+    description: "Hotel guest registration documentation"
+  },
+  {
+    policyId: "NGA-067",
+    jurisdiction: "Nigeria",
+    category: "Oil and Gas",
+    subcategory: "Exploration",
+    recordType: "Exploration Reports",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Petroleum Act",
+    description: "Oil and gas exploration documentation"
+  },
+  {
+    policyId: "NGA-068",
+    jurisdiction: "Nigeria",
+    category: "Telecommunications",
+    subcategory: "Subscriber Data",
+    recordType: "Subscriber Registration Data",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Service Termination",
+    legalReference: "Nigerian Communications Act",
+    description: "Telecommunications subscriber records"
+  },
+  {
+    policyId: "KEN-069",
+    jurisdiction: "Kenya",
+    category: "Microfinance",
+    subcategory: "Lending",
+    recordType: "Microfinance Loan Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Loan Closure",
+    legalReference: "Microfinance Act",
+    description: "Microfinance lending documentation"
+  },
+  {
+    policyId: "KEN-070",
+    jurisdiction: "Kenya",
+    category: "Agriculture",
+    subcategory: "Crop Insurance",
+    recordType: "Crop Insurance Claims",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Claim Settlement",
+    legalReference: "Agriculture and Food Authority Act",
+    description: "Agricultural insurance documentation"
+  },
+  {
+    policyId: "GBR-071",
+    jurisdiction: "UK",
+    category: "Employment",
+    subcategory: "Pension Records",
+    recordType: "Pension Scheme Records",
+    retentionPeriod: "6",
+    retentionType: "Minimum",
+    retentionTrigger: "Member Exit",
+    legalReference: "Pensions Act 2004",
+    description: "Occupational pension scheme documentation"
+  },
+  {
+    policyId: "GBR-072",
+    jurisdiction: "UK",
+    category: "Financial Conduct Authority",
+    subcategory: "Conduct Risk",
+    recordType: "Conduct Risk Assessments",
+    retentionPeriod: "6",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "FCA Handbook",
+    description: "Financial conduct risk evaluation records"
+  },
+  {
+    policyId: "DEU-073",
+    jurisdiction: "Germany",
+    category: "Pharmaceuticals",
+    subcategory: "Drug Safety",
+    recordType: "Adverse Event Reports",
+    retentionPeriod: "25",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "German Medicines Act",
+    description: "Pharmaceutical adverse event documentation"
+  },
+  {
+    policyId: "DEU-074",
+    jurisdiction: "Germany",
+    category: "Automotive",
+    subcategory: "Product Liability",
+    recordType: "Vehicle Recall Records",
+    retentionPeriod: "30",
+    retentionType: "Minimum",
+    retentionTrigger: "Product Launch",
+    legalReference: "Product Liability Act",
+    description: "Automotive product recall documentation"
+  },
+  {
+    policyId: "FRA-075",
+    jurisdiction: "France",
+    category: "Energy",
+    subcategory: "Nuclear Safety",
+    recordType: "Nuclear Safety Reports",
+    retentionPeriod: "30",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "French Nuclear Safety Act",
+    description: "Nuclear facility safety documentation"
+  },
+  {
+    policyId: "FRA-076",
+    jurisdiction: "France",
+    category: "Luxury Goods",
+    subcategory: "Authenticity",
+    recordType: "Product Authentication Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Product Sale",
+    legalReference: "Consumer Protection Code",
+    description: "Luxury goods authenticity documentation"
+  },
+  {
+    policyId: "AUS-077",
+    jurisdiction: "Australia",
+    category: "Mining",
+    subcategory: "Environmental Compliance",
+    recordType: "Mine Rehabilitation Plans",
+    retentionPeriod: "25",
+    retentionType: "Minimum",
+    retentionTrigger: "Plan Approval",
+    legalReference: "Mining Act",
+    description: "Mining environmental rehabilitation documentation"
+  },
+  {
+    policyId: "AUS-078",
+    jurisdiction: "Australia",
+    category: "Superannuation",
+    subcategory: "Retirement Funds",
+    recordType: "Superannuation Fund Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Member Exit",
+    legalReference: "Superannuation Industry (Supervision) Act",
+    description: "Retirement fund member documentation"
+  },
+  {
+    policyId: "IND-079",
+    jurisdiction: "India",
+    category: "Pharmaceutical",
+    subcategory: "Clinical Research",
+    recordType: "Clinical Trial Data",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Study Completion",
+    legalReference: "Drugs and Cosmetics Act",
+    description: "Clinical trial research documentation"
+  },
+  {
+    policyId: "IND-080",
+    jurisdiction: "India",
+    category: "Information Technology",
+    subcategory: "Outsourcing",
+    recordType: "IT Service Agreements",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Agreement Termination",
+    legalReference: "Information Technology Act",
+    description: "IT outsourcing service documentation"
+  },
+  {
+    policyId: "CHN-081",
+    jurisdiction: "China",
+    category: "Cybersecurity",
+    subcategory: "Data Localization",
+    recordType: "Data Localization Compliance Reports",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Cybersecurity Law",
+    description: "Data localization compliance documentation"
+  },
+  {
+    policyId: "CHN-082",
+    jurisdiction: "China",
+    category: "Social Credit",
+    subcategory: "Corporate Rating",
+    recordType: "Social Credit Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "Social Credit System Regulations",
+    description: "Corporate social credit evaluation records"
+  },
+  {
+    policyId: "BRA-083",
+    jurisdiction: "Brazil",
+    category: "Data Protection",
+    subcategory: "LGPD",
+    recordType: "Data Processing Impact Assessments",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "Lei Geral de Proteção de Dados (LGPD)",
+    description: "Data protection impact assessment documentation"
+  },
+  {
+    policyId: "BRA-084",
+    jurisdiction: "Brazil",
+    category: "Environmental",
+    subcategory: "Amazon Compliance",
+    recordType: "Deforestation Monitoring Reports",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Forest Code",
+    description: "Amazon deforestation compliance documentation"
+  },
+  {
+    policyId: "JPN-085",
+    jurisdiction: "Japan",
+    category: "Personal Information",
+    subcategory: "Data Protection",
+    recordType: "Personal Information Handling Records",
+    retentionPeriod: "3",
+    retentionType: "Maximum",
+    retentionTrigger: "Purpose Achievement",
+    legalReference: "Act on Personal Information Protection",
+    description: "Personal information processing documentation"
+  },
+  {
+    policyId: "JPN-086",
+    jurisdiction: "Japan",
+    category: "Financial Services",
+    subcategory: "Fintech",
+    recordType: "Virtual Currency Transaction Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Payment Services Act",
+    description: "Virtual currency transaction documentation"
+  },
+  {
+    policyId: "SGP-087",
+    jurisdiction: "Singapore",
+    category: "Maritime",
+    subcategory: "Shipping",
+    recordType: "Port Authority Records",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Vessel Departure",
+    legalReference: "Maritime and Port Authority Act",
+    description: "Maritime shipping documentation"
+  },
+  {
+    policyId: "SGP-088",
+    jurisdiction: "Singapore",
+    category: "Wealth Management",
+    subcategory: "Private Banking",
+    recordType: "Private Banking Client Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Relationship End",
+    legalReference: "Banking Act",
+    description: "Private wealth management documentation"
+  },
+  {
+    policyId: "NOR-089",
+    jurisdiction: "Norway",
+    category: "Sovereign Wealth",
+    subcategory: "Investment Management",
+    recordType: "Sovereign Fund Investment Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Investment Date",
+    legalReference: "Government Pension Fund Act",
+    description: "Sovereign wealth fund investment documentation"
+  },
+  {
+    policyId: "NOR-090",
+    jurisdiction: "Norway",
+    category: "Petroleum",
+    subcategory: "Offshore Operations",
+    recordType: "Offshore Safety Reports",
+    retentionPeriod: "30",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Petroleum Activities Act",
+    description: "Offshore petroleum safety documentation"
+  },
+  {
+    policyId: "SWE-091",
+    jurisdiction: "Sweden",
+    category: "Medical Devices",
+    subcategory: "Device Safety",
+    recordType: "Medical Device Incident Reports",
+    retentionPeriod: "15",
+    retentionType: "Minimum",
+    retentionTrigger: "Incident Date",
+    legalReference: "Medical Device Regulation (EU) 2017/745",
+    description: "Medical device safety incident documentation"
+  },
+  {
+    policyId: "SWE-092",
+    jurisdiction: "Sweden",
+    category: "Sustainability",
+    subcategory: "ESG Reporting",
+    recordType: "Environmental Impact Reports",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Report Date",
+    legalReference: "Environmental Code",
+    description: "Environmental sustainability documentation"
+  },
+  {
+    policyId: "DNK-093",
+    jurisdiction: "Denmark",
+    category: "Renewable Energy",
+    subcategory: "Wind Energy",
+    recordType: "Wind Farm Operation Records",
+    retentionPeriod: "20",
+    retentionType: "Minimum",
+    retentionTrigger: "Installation Date",
+    legalReference: "Renewable Energy Act",
+    description: "Wind energy facility operation documentation"
+  },
+  {
+    policyId: "DNK-094",
+    jurisdiction: "Denmark",
+    category: "Biotechnology",
+    subcategory: "Genetic Research",
+    recordType: "Genetic Research Data",
+    retentionPeriod: "25",
+    retentionType: "Minimum",
+    retentionTrigger: "Research Completion",
+    legalReference: "Gene Technology Act",
+    description: "Biotechnology research documentation"
+  },
+  {
+    policyId: "FIN-095",
+    jurisdiction: "Finland",
+    category: "Telecommunications",
+    subcategory: "5G Networks",
+    recordType: "5G Network Security Assessments",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Assessment Date",
+    legalReference: "Cybersecurity Act",
+    description: "5G telecommunications security documentation"
+  },
+  {
+    policyId: "FIN-096",
+    jurisdiction: "Finland",
+    category: "Gaming",
+    subcategory: "Mobile Games",
+    recordType: "Player Data Records",
+    retentionPeriod: "2",
+    retentionType: "Maximum",
+    retentionTrigger: "Account Deletion",
+    legalReference: "GDPR Article 17",
+    description: "Mobile gaming player data documentation"
+  },
+  {
+    policyId: "AUT-097",
+    jurisdiction: "Austria",
+    category: "Tourism",
+    subcategory: "Alpine Safety",
+    recordType: "Mountain Rescue Reports",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Incident Date",
+    legalReference: "Alpine Safety Regulations",
+    description: "Mountain tourism safety documentation"
+  },
+  {
+    policyId: "AUT-098",
+    jurisdiction: "Austria",
+    category: "Classical Music",
+    subcategory: "Performance Rights",
+    recordType: "Concert Performance Records",
+    retentionPeriod: "70",
+    retentionType: "Minimum",
+    retentionTrigger: "Performance Date",
+    legalReference: "Copyright Act",
+    description: "Classical music performance rights documentation"
+  },
+  {
+    policyId: "POL-099",
+    jurisdiction: "Poland",
+    category: "E-commerce",
+    subcategory: "Consumer Protection",
+    recordType: "Online Purchase Complaints",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Complaint Date",
+    legalReference: "Consumer Rights Act",
+    description: "E-commerce consumer complaint documentation"
+  },
+  {
+    policyId: "POL-100",
+    jurisdiction: "Poland",
+    category: "Cryptocurrency",
+    subcategory: "Digital Assets",
+    recordType: "Cryptocurrency Transaction Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Transaction Date",
+    legalReference: "Act on Virtual Currencies",
+    description: "Digital asset transaction documentation"
+  },
+  {
+    policyId: "CZE-101",
+    jurisdiction: "Czech Republic",
+    category: "Aerospace",
+    subcategory: "Aircraft Maintenance",
+    recordType: "Aircraft Maintenance Logs",
+    retentionPeriod: "2",
+    retentionType: "Minimum",
+    retentionTrigger: "Maintenance Date",
+    legalReference: "Aviation Act",
+    description: "Aircraft maintenance documentation"
+  },
+  {
+    policyId: "CZE-102",
+    jurisdiction: "Czech Republic",
+    category: "Beer Production",
+    subcategory: "Quality Control",
+    recordType: "Beer Quality Test Results",
+    retentionPeriod: "3",
+    retentionType: "Minimum",
+    retentionTrigger: "Production Date",
+    legalReference: "Food Safety Regulations",
+    description: "Beer production quality documentation"
+  },
+  {
+    policyId: "HUN-103",
+    jurisdiction: "Hungary",
+    category: "Automotive Manufacturing",
+    subcategory: "Quality Assurance",
+    recordType: "Vehicle Assembly Records",
+    retentionPeriod: "15",
+    retentionType: "Minimum",
+    retentionTrigger: "Production Date",
+    legalReference: "Product Liability Act",
+    description: "Automotive assembly documentation"
+  },
+  {
+    policyId: "HUN-104",
+    jurisdiction: "Hungary",
+    category: "Wine Production",
+    subcategory: "Origin Protection",
+    recordType: "Wine Origin Certificates",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Certification Date",
+    legalReference: "Wine Act",
+    description: "Wine geographical origin documentation"
+  },
+  {
+    policyId: "ROU-105",
+    jurisdiction: "Romania",
+    category: "Agriculture",
+    subcategory: "EU Subsidies",
+    recordType: "Agricultural Subsidy Applications",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Application Date",
+    legalReference: "Common Agricultural Policy Regulations",
+    description: "EU agricultural subsidy documentation"
+  },
+  {
+    policyId: "ROU-106",
+    jurisdiction: "Romania",
+    category: "Energy",
+    subcategory: "Natural Gas",
+    recordType: "Gas Pipeline Safety Inspections",
+    retentionPeriod: "20",
+    retentionType: "Minimum",
+    retentionTrigger: "Inspection Date",
+    legalReference: "Energy Law",
+    description: "Natural gas infrastructure safety documentation"
+  },
+  {
+    policyId: "BGR-107",
+    jurisdiction: "Bulgaria",
+    category: "Shipping",
+    subcategory: "Black Sea Operations",
+    recordType: "Vessel Traffic Records",
+    retentionPeriod: "5",
+    retentionType: "Minimum",
+    retentionTrigger: "Transit Date",
+    legalReference: "Maritime Code",
+    description: "Black Sea shipping traffic documentation"
+  },
+  {
+    policyId: "BGR-108",
+    jurisdiction: "Bulgaria",
+    category: "IT Services",
+    subcategory: "Software Development",
+    recordType: "Software License Agreements",
+    retentionPeriod: "7",
+    retentionType: "Minimum",
+    retentionTrigger: "Agreement Termination",
+    legalReference: "Obligations and Contracts Act",
+    description: "Software development licensing documentation"
+  },
+  {
+    policyId: "HRV-109",
+    jurisdiction: "Croatia",
+    category: "Tourism",
+    subcategory: "Coastal Tourism",
+    recordType: "Beach Concession Records",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Concession End",
+    legalReference: "Maritime Domain and Seaports Act",
+    description: "Coastal tourism concession documentation"
+  },
+  {
+    policyId: "HRV-110",
+    jurisdiction: "Croatia",
+    category: "Renewable Energy",
+    subcategory: "Solar Energy",
+    recordType: "Solar Panel Installation Records",
+    retentionPeriod: "25",
+    retentionType: "Minimum",
+    retentionTrigger: "Installation Date",
+    legalReference: "Renewable Energy Sources Act",
+    description: "Solar energy installation documentation"
+  },
+  {
+    policyId: "SVN-111",
+    jurisdiction: "Slovenia",
+    category: "Forestry",
+    subcategory: "Sustainable Logging",
+    recordType: "Forest Management Plans",
+    retentionPeriod: "30",
+    retentionType: "Minimum",
+    retentionTrigger: "Plan Approval",
+    legalReference: "Forest Act",
+    description: "Sustainable forestry management documentation"
+  },
+  {
+    policyId: "SVN-112",
+    jurisdiction: "Slovenia",
+    category: "Chemical Industry",
+    subcategory: "Chemical Safety",
+    recordType: "Chemical Safety Data Sheets",
+    retentionPeriod: "10",
+    retentionType: "Minimum",
+    retentionTrigger: "Product Discontinuation",
+    legalReference: "REACH Regulation",
+    description: "Chemical product safety documentation"
   }
 ];

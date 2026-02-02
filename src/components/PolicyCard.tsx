@@ -1,5 +1,5 @@
-import React from 'react';
-import { Calendar, FileText, Clock, Scale, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, Clock, Scale, Copy, Check } from 'lucide-react';
 import { PolicyRecord } from '../data/policies';
 
 interface PolicyCardProps {
@@ -37,24 +37,80 @@ const getJurisdictionFlag = (jurisdiction: string) => {
 };
 
 export const PolicyCard: React.FC<PolicyCardProps> = ({ policy }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyPolicyId = async () => {
+    try {
+      await navigator.clipboard.writeText(policy.policyId);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy policy ID:', err);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3 flex-1">
           <span className="text-2xl">{getJurisdictionFlag(policy.jurisdiction)}</span>
-          <div>
-            <h3 className="font-semibold text-lg text-gray-900">{policy.recordType}</h3>
-            <p className="text-sm text-gray-600">{policy.category} • {policy.subcategory}</p>
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg text-gray-900 mb-1">{policy.recordType}</h3>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="px-2 py-1 text-xs font-mono font-medium bg-blue-100 text-blue-700 rounded border border-blue-200">
+                {policy.policyId}
+              </span>
+              <button
+                onClick={handleCopyPolicyId}
+                className="p-1 hover:bg-gray-100 rounded transition-colors duration-200 group"
+                title={isCopied ? "Copied!" : "Copy Policy ID"}
+              >
+                {isCopied ? (
+                  <Check className="h-3 w-3 text-green-600" />
+                ) : (
+                  <Copy className="h-3 w-3 text-gray-500 group-hover:text-gray-700" />
+                )}
+              </button>
+            </div>
+            
+            {/* Jurisdiction, Category, and Subcategory */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-medium">Jurisdiction:</span>
+                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded border border-green-200">
+                  {policy.jurisdiction}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-medium">Category:</span>
+                <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded border border-purple-200">
+                  {policy.category}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-medium">Subcategory:</span>
+                <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded border border-orange-200">
+                  {policy.subcategory}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-        <span
-          className={`px-3 py-1 text-xs font-medium rounded-full border ${getRetentionTypeColor(
-            policy.retentionType
-          )}`}
-        >
-          {policy.retentionType}
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span
+            className={`px-3 py-1 text-xs font-medium rounded-full border ${getRetentionTypeColor(
+              policy.retentionType
+            )}`}
+          >
+            {policy.retentionType}
+          </span>
+          {policy.isCustom && (
+            <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full border border-purple-200">
+              Custom Policy
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}

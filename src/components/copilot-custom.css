@@ -1,0 +1,76 @@
+/* Custom styles for CopilotKit popup to increase width */
+
+.copilotKitPopup {
+  width: 500px !important;
+  max-width: 500px !important;
+}
+
+.copilotKitWindow {
+  width: 500px !important;
+  max-width: 500px !important;
+}
+
+.copilotKitChat {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.copilotKitMessages {
+  width: 100% !important;
+}
+
+.copilotKitInput {
+  width: calc(100% - 32px) !important;
+  margin: 16px !important;
+}
+
+/* Keep chat button fixed to the right side */
+.copilotKitButton {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 24px !important;
+  z-index: 1000 !important;
+}
+
+/* Ensure popup appears correctly positioned relative to button */
+.copilotKitPopup {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important; /* Position above the button */
+  z-index: 999 !important;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .copilotKitPopup,
+  .copilotKitWindow {
+    width: 90vw !important;
+    max-width: 90vw !important;
+  }
+  
+  .copilotKitButton {
+    right: 16px !important;
+    bottom: 16px !important;
+  }
+  
+  .copilotKitPopup {
+    right: 16px !important;
+    bottom: 72px !important;
+  }
+}
+
+/* Ensure the popup doesn't overflow on smaller screens */
+@media (max-width: 500px) {
+  .copilotKitPopup,
+  .copilotKitWindow {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    right: 2.5vw !important;
+    bottom: 72px !important;
+  }
+  
+  .copilotKitButton {
+    right: 12px !important;
+    bottom: 12px !important;
+  }
+}

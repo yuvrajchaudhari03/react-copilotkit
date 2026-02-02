@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Globe, FileText, Clock } from 'lucide-react';
+import { BarChart3, Globe, FileText, Clock, Star } from 'lucide-react';
 import { PolicyRecord } from '../data/policies';
 
 interface PolicyStatsProps {
@@ -8,6 +8,7 @@ interface PolicyStatsProps {
 
 export const PolicyStats: React.FC<PolicyStatsProps> = ({ policies }) => {
   const totalPolicies = policies.length;
+  const customPolicies = policies.filter(p => p.isCustom).length;
   const uniqueJurisdictions = new Set(policies.map(p => p.jurisdiction)).size;
   const uniqueCategories = new Set(policies.map(p => p.category)).size;
   const avgRetention = policies
@@ -24,6 +25,13 @@ export const PolicyStats: React.FC<PolicyStatsProps> = ({ policies }) => {
       bg: 'bg-blue-50'
     },
     {
+      icon: Star,
+      label: 'Custom Policies',
+      value: customPolicies.toString(),
+      color: 'text-purple-600',
+      bg: 'bg-purple-50'
+    },
+    {
       icon: Globe,
       label: 'Jurisdictions',
       value: uniqueJurisdictions.toString(),
@@ -34,8 +42,8 @@ export const PolicyStats: React.FC<PolicyStatsProps> = ({ policies }) => {
       icon: BarChart3,
       label: 'Categories',
       value: uniqueCategories.toString(),
-      color: 'text-purple-600',
-      bg: 'bg-purple-50'
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50'
     },
     {
       icon: Clock,
@@ -47,7 +55,7 @@ export const PolicyStats: React.FC<PolicyStatsProps> = ({ policies }) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
       {stats.map((stat, index) => (
         <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center justify-between">
