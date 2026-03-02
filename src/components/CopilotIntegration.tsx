@@ -5,6 +5,15 @@ import '@copilotkit/react-ui/styles.css';
 import './copilot-custom.css';
 import { policiesData, PolicyRecord } from '../data/policies';
 import { assetsData } from '../data/assets';
+import { 
+  PolicyChatCard, 
+  AssetChatCard, 
+  PolicyGrid, 
+  AssetGrid, 
+  SuccessCard, 
+  WarningCard, 
+  ErrorCard 
+} from './ChatCards';
 
 interface CopilotIntegrationProps {
   children: React.ReactNode;
@@ -69,6 +78,42 @@ const DataProvider: React.FC<{
         required: true,
       },
     ],
+    render: ({ status, args, result }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">🔄 Applying policy...</div>;
+      }
+      
+      const asset = assetsData.find(a => a.assetId === args.assetId);
+      const policy = currentPolicies.find(p => p.policyId === args.policyId);
+      
+      if (!asset || !policy) {
+        return <ErrorCard title="Error" message={result as string} />;
+      }
+      
+      if (result?.toString().startsWith('Warning')) {
+        return (
+          <div>
+            <WarningCard title="Policy Applied with Warning" message={result as string} />
+            <AssetChatCard asset={asset} appliedPolicy={policy} />
+          </div>
+        );
+      }
+      
+      return (
+        <div>
+          <SuccessCard 
+            title="Policy Applied Successfully" 
+            message={`Applied ${policy.policyId} to ${asset.name}`}
+            details={[
+              { label: 'Asset ID', value: asset.assetId },
+              { label: 'Policy ID', value: policy.policyId },
+              { label: 'Retention', value: policy.retentionPeriod === 'Unlimited' ? 'Unlimited' : `${policy.retentionPeriod} years` },
+            ]}
+          />
+          <AssetChatCard asset={asset} appliedPolicy={policy} />
+        </div>
+      );
+    },
     handler: async ({ assetId, policyId }) => {
       // Find the asset and policy to validate they exist
       const asset = assetsData.find(a => a.assetId === assetId);
@@ -124,6 +169,92 @@ const DataProvider: React.FC<{
     },
   });
 
+  // Action to suggest policies for an asset - returns deduplicated results
+  useCopilotAction({
+    name: "suggestPoliciesForAsset",
+    description: "Suggest compatible retention policies for a specific asset. Use this when user asks for policy suggestions or recommendations for an asset. Returns a single deduplicated list of matching policies.",
+    parameters: [
+      {
+        name: "assetId",
+        type: "string",
+        description: "The ID of the asset to suggest policies for (e.g., AST-001, AST-002)",
+        required: true,
+      },
+    ],
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">🔍 Finding compatible policies...</div>;
+      }
+      
+      const asset = assetsData.find(a => a.assetId.toLowerCase() === (args.assetId || '').toLowerCase());
+      
+      if (!asset) {
+        return (
+          <ErrorCard 
+            title="Asset Not Found" 
+            message={`Asset "${args.assetId}" not found.`}
+            suggestions={assetsData.slice(0, 4).map(a => a.assetId)}
+          />
+        );
+      }
+
+      // Find policies matching the asset's category, subcategory, or related keywords
+      const searchTerms = [
+        asset.category.toLowerCase(),
+        asset.subcategory.toLowerCase(),
+        asset.name.toLowerCase()
+      ];
+      
+      // Use a Map to deduplicate policies by policyId
+      const policyMap = new Map<string, typeof currentPolicies[0]>();
+      
+      currentPolicies.forEach(policy => {
+        const policyText = `${policy.category} ${policy.subcategory} ${policy.recordType} ${policy.description}`.toLowerCase();
+        
+        // Check if any search term matches
+        const matches = searchTerms.some(term => 
+          policyText.includes(term) || 
+          policy.category.toLowerCase().includes(term) ||
+          term.includes(policy.category.toLowerCase())
+        );
+        
+        if (matches && !policyMap.has(policy.policyId)) {
+          policyMap.set(policy.policyId, policy);
+        }
+      });
+      
+      const suggestedPolicies = Array.from(policyMap.values());
+      
+      if (suggestedPolicies.length === 0) {
+        return (
+          <div>
+            <AssetChatCard asset={asset} appliedPolicy={null} />
+            <WarningCard 
+              title="No Matching Policies Found" 
+              message={`No policies found that match the category "${asset.category}". You may need to create a custom policy or search for policies manually.`}
+            />
+          </div>
+        );
+      }
+      
+      return (
+        <div>
+          <AssetChatCard asset={asset} appliedPolicy={assetPolicyMappings[asset.assetId] ? currentPolicies.find(p => p.policyId === assetPolicyMappings[asset.assetId]) : null} />
+          <div className="mt-3">
+            <PolicyGrid policies={suggestedPolicies} title={`Suggested policies for ${asset.name}`} />
+          </div>
+          <div className="mt-2 text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
+            💡 Tip: Say "Apply policy [POLICY_ID] to {asset.assetId}" to assign one of these policies.
+          </div>
+        </div>
+      );
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
+    },
+  });
+
   // Action to search and display policies
   useCopilotAction({
     name: "searchPolicies",
@@ -142,8 +273,13 @@ const DataProvider: React.FC<{
         required: false,
       },
     ],
-    handler: async ({ searchCriteria, limit = 10 }) => {
-      const searchTerm = searchCriteria.toLowerCase();
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">🔍 Searching policies...</div>;
+      }
+      
+      const searchTerm = (args.searchCriteria || '').toLowerCase();
+      const limit = args.limit || 10;
       
       const matchingPolicies = currentPolicies.filter(policy => 
         policy.policyId.toLowerCase().includes(searchTerm) ||
@@ -152,47 +288,24 @@ const DataProvider: React.FC<{
         policy.subcategory.toLowerCase().includes(searchTerm) ||
         policy.recordType.toLowerCase().includes(searchTerm) ||
         policy.description.toLowerCase().includes(searchTerm) ||
-        policy.legalReference.toLowerCase().includes(searchTerm) ||
-        policy.retentionPeriod.toLowerCase().includes(searchTerm) ||
-        policy.retentionType.toLowerCase().includes(searchTerm) ||
-        policy.retentionTrigger.toLowerCase().includes(searchTerm)
+        policy.legalReference.toLowerCase().includes(searchTerm)
       ).slice(0, limit);
-
-      if (matchingPolicies.length === 0) {
-        return `No policies found matching "${searchCriteria}". Try searching for jurisdictions like "Germany" or "USA", categories like "Customer Data" or "Financial Records", or specific policy IDs like "DEU-002".`;
-      }
-
-      let response = `Found ${matchingPolicies.length} policies matching "${searchCriteria}":\n\n`;
       
-      matchingPolicies.forEach((policy, index) => {
-        response += `${index + 1}. **${policy.policyId}** - ${policy.recordType}\n`;
-        response += `   📍 Jurisdiction: ${policy.jurisdiction}\n`;
-        response += `   📂 Category: ${policy.category} → ${policy.subcategory}\n`;
-        response += `   ⏱️ Retention: ${policy.retentionPeriod === 'Unlimited' ? 'Unlimited' : `${policy.retentionPeriod} years`} (${policy.retentionType})\n`;
-        response += `   🎯 Trigger: ${policy.retentionTrigger}\n`;
-        response += `   📋 Legal Ref: ${policy.legalReference}\n`;
-        if (policy.isCustom) {
-          response += `   ⭐ **Custom Policy**\n`;
-        }
-        response += `   📝 Description: ${policy.description.substring(0, 100)}${policy.description.length > 100 ? '...' : ''}\n\n`;
-      });
-
-      if (matchingPolicies.length === limit && currentPolicies.filter(policy => 
-        policy.policyId.toLowerCase().includes(searchTerm) ||
-        policy.jurisdiction.toLowerCase().includes(searchTerm) ||
-        policy.category.toLowerCase().includes(searchTerm) ||
-        policy.subcategory.toLowerCase().includes(searchTerm) ||
-        policy.recordType.toLowerCase().includes(searchTerm) ||
-        policy.description.toLowerCase().includes(searchTerm) ||
-        policy.legalReference.toLowerCase().includes(searchTerm) ||
-        policy.retentionPeriod.toLowerCase().includes(searchTerm) ||
-        policy.retentionType.toLowerCase().includes(searchTerm) ||
-        policy.retentionTrigger.toLowerCase().includes(searchTerm)
-      ).length > limit) {
-        response += `\n*Showing first ${limit} results. There are more policies matching your search.*`;
+      if (matchingPolicies.length === 0) {
+        return (
+          <ErrorCard 
+            title="No Policies Found" 
+            message={`No policies found matching "${args.searchCriteria}"`}
+            suggestions={['Germany', 'USA', 'Customer Data', 'Financial Records']}
+          />
+        );
       }
-
-      return response;
+      
+      return <PolicyGrid policies={matchingPolicies} title={`Policies matching "${args.searchCriteria}"`} />;
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
     },
   });
 
@@ -214,8 +327,13 @@ const DataProvider: React.FC<{
         required: false,
       },
     ],
-    handler: async ({ searchCriteria, limit = 10 }) => {
-      const searchTerm = searchCriteria.toLowerCase();
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">🔍 Searching assets...</div>;
+      }
+      
+      const searchTerm = (args.searchCriteria || '').toLowerCase();
+      const limit = args.limit || 10;
       
       const matchingAssets = assetsData.filter(asset => 
         asset.assetId.toLowerCase().includes(searchTerm) ||
@@ -226,45 +344,29 @@ const DataProvider: React.FC<{
         asset.location.toLowerCase().includes(searchTerm) ||
         asset.owner.toLowerCase().includes(searchTerm)
       ).slice(0, limit);
-
-      if (matchingAssets.length === 0) {
-        return `No assets found matching "${searchCriteria}". Try searching for asset names like "Customer Database", categories like "Database" or "Application", or specific asset IDs like "AST-001".`;
-      }
-
-      let response = `Found ${matchingAssets.length} assets matching "${searchCriteria}":\n\n`;
       
-      matchingAssets.forEach((asset, index) => {
-        const appliedPolicyId = assetPolicyMappings[asset.assetId];
-        const appliedPolicy = appliedPolicyId ? currentPolicies.find(p => p.policyId === appliedPolicyId) : null;
-        
-        response += `${index + 1}. **${asset.assetId}** - ${asset.name}\n`;
-        response += `   📂 Category: ${asset.category} → ${asset.subcategory}\n`;
-        response += `   � Location: ${asset.location}\n`;
-        response += `   👤 Owner: ${asset.owner}\n`;
-        response += `   📝 Description: ${asset.description}\n`;
-        
-        if (appliedPolicy) {
-          response += `   ✅ **Policy Applied:** ${appliedPolicy.policyId} (${appliedPolicy.recordType})\n`;
-          response += `   ⏱️ Retention: ${appliedPolicy.retentionPeriod === 'Unlimited' ? 'Unlimited' : `${appliedPolicy.retentionPeriod} years`}\n`;
-        } else {
-          response += `   ❌ **No Policy Applied** - Requires attention\n`;
-        }
-        response += '\n';
-      });
-
-      if (matchingAssets.length === limit && assetsData.filter(asset => 
-        asset.assetId.toLowerCase().includes(searchTerm) ||
-        asset.name.toLowerCase().includes(searchTerm) ||
-        asset.category.toLowerCase().includes(searchTerm) ||
-        asset.subcategory.toLowerCase().includes(searchTerm) ||
-        asset.description.toLowerCase().includes(searchTerm) ||
-        asset.location.toLowerCase().includes(searchTerm) ||
-        asset.owner.toLowerCase().includes(searchTerm)
-      ).length > limit) {
-        response += `\n*Showing first ${limit} results. There are more assets matching your search.*`;
+      if (matchingAssets.length === 0) {
+        return (
+          <ErrorCard 
+            title="No Assets Found" 
+            message={`No assets found matching "${args.searchCriteria}"`}
+            suggestions={['Database', 'HR', 'Payroll', 'AST-001']}
+          />
+        );
       }
-
-      return response;
+      
+      const assetsWithPolicies = matchingAssets.map(asset => ({
+        asset,
+        appliedPolicy: assetPolicyMappings[asset.assetId] 
+          ? currentPolicies.find(p => p.policyId === assetPolicyMappings[asset.assetId]) || null
+          : null
+      }));
+      
+      return <AssetGrid assets={assetsWithPolicies} title={`Assets matching "${args.searchCriteria}"`} />;
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
     },
   });
 
@@ -280,30 +382,38 @@ const DataProvider: React.FC<{
         required: true,
       },
     ],
-    handler: async ({ policyId }) => {
-      const policy = currentPolicies.find(p => p.policyId.toLowerCase() === policyId.toLowerCase());
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">📋 Loading policy details...</div>;
+      }
+      
+      const policy = currentPolicies.find(p => p.policyId.toLowerCase() === (args.policyId || '').toLowerCase());
       
       if (!policy) {
         const suggestions = currentPolicies
-          .filter(p => p.policyId.toLowerCase().includes(policyId.toLowerCase().substring(0, 3)))
+          .filter(p => p.policyId.toLowerCase().includes((args.policyId || '').toLowerCase().substring(0, 3)))
           .slice(0, 3)
           .map(p => p.policyId);
         
-        return `Policy "${policyId}" not found. ${suggestions.length > 0 ? `Did you mean: ${suggestions.join(', ')}?` : 'Please check the policy ID and try again.'}`;
+        return (
+          <ErrorCard 
+            title="Policy Not Found" 
+            message={`Policy "${args.policyId}" not found.`}
+            suggestions={suggestions}
+          />
+        );
       }
-
-      return `📋 **Policy Details for ${policy.policyId}**
-
-**Record Type:** ${policy.recordType}
-**Jurisdiction:** ${policy.jurisdiction} 🌍
-**Category:** ${policy.category} → ${policy.subcategory}
-**Retention Period:** ${policy.retentionPeriod === 'Unlimited' ? 'Unlimited' : `${policy.retentionPeriod} years`}
-**Retention Type:** ${policy.retentionType}
-**Retention Trigger:** ${policy.retentionTrigger}
-**Legal Reference:** ${policy.legalReference}
-${policy.isCustom ? '⭐ **Custom Policy**' : ''}
-
-**Description:** ${policy.description}`;
+      
+      return (
+        <div>
+          <div className="text-sm font-medium text-gray-600 mb-2">📋 Policy Details</div>
+          <PolicyChatCard policy={policy} />
+        </div>
+      );
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
     },
   });
 
@@ -319,50 +429,46 @@ ${policy.isCustom ? '⭐ **Custom Policy**' : ''}
         required: true,
       },
     ],
-    handler: async ({ assetId }) => {
-      const asset = assetsData.find(a => a.assetId.toLowerCase() === assetId.toLowerCase());
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">📦 Loading asset details...</div>;
+      }
+      
+      const asset = assetsData.find(a => a.assetId.toLowerCase() === (args.assetId || '').toLowerCase());
       
       if (!asset) {
         const suggestions = assetsData
-          .filter(a => a.assetId.toLowerCase().includes(assetId.toLowerCase().substring(0, 3)))
+          .filter(a => a.assetId.toLowerCase().includes((args.assetId || '').toLowerCase().substring(0, 3)))
           .slice(0, 3)
           .map(a => a.assetId);
         
-        return `Asset "${assetId}" not found. ${suggestions.length > 0 ? `Did you mean: ${suggestions.join(', ')}?` : 'Please check the asset ID and try again.'}`;
+        return (
+          <ErrorCard 
+            title="Asset Not Found" 
+            message={`Asset "${args.assetId}" not found.`}
+            suggestions={suggestions}
+          />
+        );
       }
-
+      
       const appliedPolicyId = assetPolicyMappings[asset.assetId];
       const appliedPolicy = appliedPolicyId ? currentPolicies.find(p => p.policyId === appliedPolicyId) : null;
-
-      let response = `📦 **Asset Details for ${asset.assetId}**
-
-**Name:** ${asset.name}
-**Category:** ${asset.category} → ${asset.subcategory}
-**Location:** ${asset.location}
-**Owner:** ${asset.owner}
-**Description:** ${asset.description}
-
-`;
-
-      if (appliedPolicy) {
-        response += `✅ **Applied Policy:** ${appliedPolicy.policyId} (${appliedPolicy.recordType})
-**Retention Period:** ${appliedPolicy.retentionPeriod === 'Unlimited' ? 'Unlimited' : `${appliedPolicy.retentionPeriod} years`}
-**Legal Reference:** ${appliedPolicy.legalReference}`;
-      } else {
-        response += `❌ **No Policy Applied**
-⚠️ This asset requires a retention policy for compliance.`;
-
-        // Suggest compatible policies based on category
-        const compatiblePolicies = currentPolicies.filter(p => p.category === asset.category).slice(0, 3);
-        if (compatiblePolicies.length > 0) {
-          response += `\n\n💡 **Suggested Compatible Policies:**\n`;
-          compatiblePolicies.forEach(policy => {
-            response += `• ${policy.policyId} - ${policy.recordType} (${policy.jurisdiction})\n`;
-          });
-        }
-      }
-
-      return response;
+      
+      return (
+        <div>
+          <div className="text-sm font-medium text-gray-600 mb-2">📦 Asset Details</div>
+          <AssetChatCard asset={asset} appliedPolicy={appliedPolicy} />
+          {!appliedPolicy && (
+            <div className="mt-2 text-xs text-amber-600 bg-amber-50 p-2 rounded border border-amber-200">
+              💡 Tip: Say "Apply policy [POLICY_ID] to {asset.assetId}" to assign a retention policy.
+            </div>
+          )}
+        </div>
+      );
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
     },
   });
 
@@ -384,50 +490,63 @@ ${policy.isCustom ? '⭐ **Custom Policy**' : ''}
         required: true,
       },
     ],
-    handler: async ({ type, category }) => {
-      if (type.toLowerCase() === 'policies') {
+    render: ({ status, args }) => {
+      if (status === 'executing') {
+        return <div className="text-sm text-gray-500 animate-pulse">📂 Loading category data...</div>;
+      }
+      
+      const type = args.type?.toLowerCase();
+      const category = args.category || '';
+      
+      if (type === 'policies') {
         const policiesInCategory = currentPolicies.filter(p => 
           p.category.toLowerCase().includes(category.toLowerCase()) ||
           p.subcategory.toLowerCase().includes(category.toLowerCase())
         );
         
         if (policiesInCategory.length === 0) {
-          return `No policies found in category "${category}". Available categories: ${[...new Set(currentPolicies.map(p => p.category))].join(', ')}`;
+          return (
+            <ErrorCard 
+              title="No Policies Found" 
+              message={`No policies found in category "${category}"`}
+              suggestions={[...new Set(currentPolicies.map(p => p.category))].slice(0, 4)}
+            />
+          );
         }
-
-        let response = `📋 **Policies in "${category}" category (${policiesInCategory.length} found):**\n\n`;
-        policiesInCategory.forEach((policy, index) => {
-          response += `${index + 1}. **${policy.policyId}** - ${policy.recordType} (${policy.jurisdiction})\n`;
-        });
         
-        return response;
-      } 
+        return <PolicyGrid policies={policiesInCategory} title={`Policies in "${category}" category`} />;
+      }
       
-      if (type.toLowerCase() === 'assets') {
+      if (type === 'assets') {
         const assetsInCategory = assetsData.filter(a => 
           a.category.toLowerCase().includes(category.toLowerCase())
         );
         
         if (assetsInCategory.length === 0) {
-          return `No assets found in category "${category}". Available categories: ${[...new Set(assetsData.map(a => a.category))].join(', ')}`;
+          return (
+            <ErrorCard 
+              title="No Assets Found" 
+              message={`No assets found in category "${category}"`}
+              suggestions={[...new Set(assetsData.map(a => a.category))].slice(0, 4)}
+            />
+          );
         }
-
-        let response = `📦 **Assets in "${category}" category (${assetsInCategory.length} found):**\n\n`;
-        assetsInCategory.forEach((asset, index) => {
-          const appliedPolicyId = assetPolicyMappings[asset.assetId];
-          response += `${index + 1}. **${asset.assetId}** - ${asset.name}`;
-          if (appliedPolicyId) {
-            response += ` ✅ (Policy: ${appliedPolicyId})`;
-          } else {
-            response += ` ❌ (No Policy)`;
-          }
-          response += '\n';
-        });
         
-        return response;
+        const assetsWithPolicies = assetsInCategory.map(asset => ({
+          asset,
+          appliedPolicy: assetPolicyMappings[asset.assetId] 
+            ? currentPolicies.find(p => p.policyId === assetPolicyMappings[asset.assetId]) || null
+            : null
+        }));
+        
+        return <AssetGrid assets={assetsWithPolicies} title={`Assets in "${category}" category`} />;
       }
       
-      return `Please specify 'policies' or 'assets' for the type parameter.`;
+      return <ErrorCard title="Invalid Type" message="Please specify 'policies' or 'assets' for the type." />;
+    },
+    handler: async () => {
+      // Return empty - the render function handles the UI display
+      return "";
     },
   });
 
@@ -474,11 +593,36 @@ export const CopilotIntegration: React.FC<CopilotIntegrationProps> = ({ children
   // Different instructions based on page type
   const instructions = pageType === 'form' 
     ? "You are an AI assistant helping users fill out a policy creation form in a conversational, step-by-step manner. When a user asks for help with the form, use the 'startFormConversation' action to begin a guided conversation that prompts for each field in order. Guide users through filling each field one by one, validate their input, and only proceed to the next field after the current one is complete. You can also help review the form status, fill specific fields, and submit the completed form. Be encouraging and helpful throughout the process."
-    : "You are an AI assistant helping users understand and manage policy retention requirements and assets. You can search for and display policies and assets with their IDs using the search actions. When users ask about specific policies or assets, use the appropriate search actions to show detailed information including IDs. You can help explain policy details, suggest compliance strategies, answer questions about retention periods, and help users apply policies to assets. You have access to a comprehensive dataset of policy retention requirements and organizational assets. When a user wants to apply a policy to an asset, use the provided actions to make the changes. You can suggest compatible policies for assets based on category matching. When answering questions about policy counts or statistics, use the provided policy data to give accurate numbers. Always include policy IDs and asset IDs in your responses when displaying search results.";
+    : `You are an AI assistant helping users understand and manage policy retention requirements and assets.
+
+IMPORTANT: You MUST use the provided actions to display data. NEVER list policies or assets as plain text. NEVER make multiple search calls for the same request.
+
+When users ask to see, find, show, list, or search for:
+- Policies: ALWAYS use the "searchPolicies" action or "listByCategory" action with type="policies"
+- Assets: ALWAYS use the "searchAssets" action or "listByCategory" action with type="assets"
+- Specific policy by ID: ALWAYS use the "getPolicyDetails" action
+- Specific asset by ID: ALWAYS use the "getAssetDetails" action
+- Suggest/recommend policies for an asset: ALWAYS use the "suggestPoliciesForAsset" action (this returns a single deduplicated list)
+
+Examples of queries that should trigger actions:
+- "Show me finance assets" → use searchAssets with searchCriteria="finance"
+- "List German policies" → use searchPolicies with searchCriteria="Germany"
+- "Find customer data policies" → use searchPolicies with searchCriteria="Customer Data"
+- "Show database assets" → use searchAssets with searchCriteria="database"
+- "Get policy DEU-002" → use getPolicyDetails with policyId="DEU-002"
+- "Show asset AST-001" → use getAssetDetails with assetId="AST-001"
+- "Suggest policies for AST-002" → use suggestPoliciesForAsset with assetId="AST-002"
+- "Recommend policies for asset AST-001" → use suggestPoliciesForAsset with assetId="AST-001"
+
+CRITICAL: When suggesting or recommending policies for an asset, use ONLY the "suggestPoliciesForAsset" action ONCE. Do NOT make multiple searchPolicies calls. The suggestPoliciesForAsset action already handles finding all matching policies and deduplicating them.
+
+The actions will display results in an interactive card UI. Do NOT describe the data in text format - let the action render the cards.
+
+You can also help users apply policies to assets using the "applyPolicyToAsset" action.`;
 
   const initialMessage = pageType === 'form'
     ? "Hello! I'm here to help you create a new policy. I can guide you through filling out the form step by step - just say 'Help me fill this form' or 'Start form conversation' and I'll walk you through each field one by one. I can also help review your progress or fill specific fields. How would you like to get started?"
-    : "Hello! I can help you understand policy retention requirements and manage asset compliance. I have access to your complete policies and assets database. You can ask me to:\n• Search for policies: 'Show me German policies' or 'Find policies about Customer Data'\n• Search for assets: 'Show me database assets' or 'Find assets without policies'\n• Get details: 'Show policy DEU-002' or 'Show asset AST-001'\n• Apply policies: 'Apply policy DEU-002 to asset AST-004'\n• List by category: 'List all Financial Records policies'\n\nWhat would you like to know?";
+    : "Hello! I can help you understand policy retention requirements and manage asset compliance. I have access to your complete policies and assets database. You can ask me to:\n• Search for policies: 'Show me German policies' or 'Find policies about Customer Data'\n• Search for assets: 'Show me database assets' or 'Find finance related assets'\n• Get details: 'Show policy DEU-002' or 'Show asset AST-001'\n• Suggest policies: 'Suggest policies for AST-002'\n• Apply policies: 'Apply policy DEU-002 to asset AST-004'\n\nWhat would you like to know?";
 
   return (
     <CopilotKit 
